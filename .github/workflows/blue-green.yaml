@@ -15,11 +15,11 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
-
-      - name: terraform init/plan 
+      - name: installing terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.1.7
+      - name: terraform init/plan 
         run: |
           terraform init
           terraform plan
