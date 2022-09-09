@@ -8,6 +8,6 @@ terraform {
 
 # Configuring GCP Provider
 provider "google" {
-  project     = "nomadic-armor-362010"
-  region      = "us-central1"
+  project = "nomadic-armor-362010"
+  region  = "us-central1"
 }
