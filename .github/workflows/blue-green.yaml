@@ -3,7 +3,8 @@ on: push
 jobs:
   Explore-GitHub-Actions:
     env:
-      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     runs-on: ubuntu-latest
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -14,24 +15,18 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
 
-    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-    - name: Terraform Init
-      working-directory: ./terraform
-      run: terraform init
+    - name: Verify Terraform version
+      run: terraform --version
 
-    # Checks that all Terraform configuration files adhere to a canonical format
-    - name: Terraform Format
+    - name: Terraform init
       working-directory: ./terraform
-      run: terraform fmt -check
+      run: terraform init -input=false
 
-    # Generates an execution plan for Terraform
-    - name: Terraform Plan
+    - name: Terraform validation
       working-directory: ./terraform
-      run: terraform plan
+      run: terraform validate
 
-      # On push to main, build or change infrastructure according to Terraform configuration files
-      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
-    - name: Terraform Apply
+    - name: Terraform apply
+      working-directory: ./terraform
       if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-      working-directory: ./terraform
-      run: terraform apply -auto-approve
+      run: terraform apply -auto-approve -input=false

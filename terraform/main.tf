@@ -1,4 +1,4 @@
-resource "google_service_account" "service_account" {
-  account_id   = "test-svc"
-  display_name = "test-svc"
+resource "aws_iam_group" "developers" {
+  name = "developers"
+  path = "/users/"
 }
