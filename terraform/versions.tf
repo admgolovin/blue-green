@@ -1,14 +1,13 @@
 terraform {
   required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "=3.0.0"
+    google = {
+      version = "~> 4.0.0"
     }
   }
 }
 
-# Configure the Microsoft Azure Provider
-provider "azurerm" {
-  features {}
-  skip_provider_registration = true
+# Configuring GCP Provider
+provider "google" {
+  project     = "nomadic-armor-362010"
+  region      = "us-central1"
 }

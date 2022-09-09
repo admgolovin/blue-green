@@ -1,4 +1,4 @@
-resource "azurerm_resource_group" "test" {
-  name     = "test"
-  location = "West Europe"
+resource "google_service_account" "service_account" {
+  account_id   = "test-svc"
+  display_name = "test-svc"
 }
