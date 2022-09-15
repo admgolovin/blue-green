@@ -5,6 +5,7 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      DEPLOY_CONF_FILE_NAME: "deploy-conf.yaml"
     runs-on: [self-hosted, Linux, X64]
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -20,24 +21,25 @@ jobs:
         # Default: 'space-delimited'
         format: 'space-delimited'
     
-    - uses: technote-space/get-diff-action@v6
-      id: gitDiff
-      with:
-        FILES: |
-          deploy-conf.yaml
+    # - uses: technote-space/get-diff-action@v6
+    #   id: gitDiff
+    #   with:
+    #     FILES: |
+    #       deploy-conf.yaml
 
-    - name: Print git diff for deploy-conf.yaml
-      run: |
-        echo ${{steps.gitDiff.outputs.all}}
+    # - name: Print git diff for deploy-conf.yaml
+    #   run: |
+    #     echo ${{steps.gitDiff.outputs.all}}
     
-    - name: Print what was changed
-      run: |
-          git diff ${{github.event.before}} ${{github.sha}}
-
     - name: Print changed files
       run: |
         for changed_file in ${{ steps.changeLog.outputs.all }}; do
           echo "Do something with this ${changed_file}."
+          echo "Conf file name: $DEPLOY_CONF_FILE_NAME"
+
+          if [ ${changed_file} == "$DEPLOY_CONF_FILE_NAME" ]; then
+            git diff --color=always  ${{github.event.before}} ${{github.sha}} $DEPLOY_CONF_FILE_NAME | perl -wlne 'print $1 if /^\e\[32m\+\e\[m\e\[32m(.*)\e\[m$/'
+          fi
         done
     
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
