@@ -38,7 +38,8 @@ jobs:
           echo "Conf file name: $DEPLOY_CONF_FILE_NAME"
 
           if [ ${changed_file} == "$DEPLOY_CONF_FILE_NAME" ]; then
-            git diff --color=always  ${{github.event.before}} ${{github.sha}} $DEPLOY_CONF_FILE_NAME | perl -wlne 'print $1 if /^\e\[32m\+\e\[m\e\[32m(.*)\e\[m$/'
+            git diff --color=always ${{github.event.before}} ${{github.sha}}
+            git diff --color=always ${{github.event.before}} ${{github.sha}} $DEPLOY_CONF_FILE_NAME | perl -wlne 'print $1 if /^\e\[32m\+\e\[m\e\[32m(.*)\e\[m$/'
           fi
         done
     
