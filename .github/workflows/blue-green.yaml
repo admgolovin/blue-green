@@ -26,9 +26,13 @@ jobs:
         FILES: |
           deploy-conf.yaml
 
-    - name: Perint git diff for deploy-conf.yaml
+    - name: Print git diff for deploy-conf.yaml
       run: |
         echo ${{steps.gitDiff.outputs.all}}
+    
+    - name: Print what was changed
+      run: |
+          git diff ${{github.event.before}} ${{github.sha}}
 
     - name: Print changed files
       run: |
