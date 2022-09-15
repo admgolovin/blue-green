@@ -19,7 +19,17 @@ jobs:
         # Can be 'space-delimited', 'csv', or 'json'.
         # Default: 'space-delimited'
         format: 'space-delimited'
-  
+    
+    - uses: technote-space/get-diff-action@v6
+      id: gitDiff
+      with:
+        FILES: |
+          deploy-conf.yaml
+
+    - name: Perint git diff for deploy-conf.yaml
+      run: |
+        echo ${steps.gitDiff.outputs.all}
+
     - name: Print changed files
       run: |
         for changed_file in ${{ steps.changeLog.outputs.all }}; do
