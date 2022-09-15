@@ -33,7 +33,7 @@ jobs:
     
     - name: Test git diff command
       run: |
-        git diff --color=always ${{github.event.before}} ${{github.sha}} ${changed_file}
+        git diff --color=always ${{github.event.before}} ${{github.sha}} $DEPLOY_CONF_FILE_NAME
 
     - name: Print changed files
       run: |
@@ -42,8 +42,8 @@ jobs:
           echo "Conf file name: $DEPLOY_CONF_FILE_NAME"
 
           if [ "${changed_file}" == "$DEPLOY_CONF_FILE_NAME" ]; then
-            echo "git diff --color=always ${{github.event.before}} ${{github.sha}} ${changed_file} | perl -wlne 'print $1 if /^\e\[32m\+\e\[m\e\[32m(.*)\e\[m$/'"
-            git diff --color=always ${{github.event.before}} ${{github.sha}} ${changed_file} | perl -wlne 'print $1 if /^\e\[32m\+\e\[m\e\[32m(.*)\e\[m$/'
+            echo "git diff --color=always ${{github.event.before}} ${{github.sha}} $changed_file | perl -wlne 'print $1 if /^\e\[32m\+\e\[m\e\[32m(.*)\e\[m$/'"
+            git diff --color=always ${{github.event.before}} ${{github.sha}} $changed_file | perl -wlne 'print $1 if /^\e\[32m\+\e\[m\e\[32m(.*)\e\[m$/'
           fi
         done
     
