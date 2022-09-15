@@ -28,7 +28,7 @@ jobs:
 
     - name: Perint git diff for deploy-conf.yaml
       run: |
-        echo ${steps.gitDiff.outputs.all}
+        echo ${{steps.gitDiff.outputs.all}}
 
     - name: Print changed files
       run: |
