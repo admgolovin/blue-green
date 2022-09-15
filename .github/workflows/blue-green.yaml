@@ -33,7 +33,7 @@ jobs:
     
     - name: Test git diff command
       run: |
-        git diff --color=always ${{github.event.before}} ${{github.sha}} $DEPLOY_CONF_FILE_NAME
+        git diff --color=always ${{github.event.before}} ${{github.sha}}
 
     - name: Print changed files
       run: |
