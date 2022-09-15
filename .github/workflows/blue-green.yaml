@@ -31,6 +31,10 @@ jobs:
     #   run: |
     #     echo ${{steps.gitDiff.outputs.all}}
     
+    - name: Test git diff command
+      run: |
+        git diff --color=always ${{github.event.before}} ${{github.sha}} ${changed_file}
+
     - name: Print changed files
       run: |
         for changed_file in ${{ steps.changeLog.outputs.all }}; do
