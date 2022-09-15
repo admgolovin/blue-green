@@ -10,7 +10,21 @@ jobs:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v2
-
+    
+    # Get the list of changed files
+    - uses: jitterbit/get-changed-files@v1
+      with:
+        # Format of the steps output context.
+        # Can be 'space-delimited', 'csv', or 'json'.
+        # Default: 'space-delimited'
+        format: ''
+  
+    - name: Print changed files
+      run: |
+        for changed_file in ${{ steps.files.outputs.all }}; do
+          echo "Do something with this ${changed_file}."
+        done
+    
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
