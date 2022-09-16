@@ -12,24 +12,24 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     
-    # Get the list of changed files
-    - uses: jitterbit/get-changed-files@v1
-      id: changeLog
-      with:
-        # Format of the steps output context.
-        # Can be 'space-delimited', 'csv', or 'json'.
-        # Default: 'space-delimited'
-        format: 'space-delimited'
-    
-    # - uses: technote-space/get-diff-action@v6
-    #   id: gitDiff
+    # # Get the list of changed files
+    # - uses: jitterbit/get-changed-files@v1
+    #   id: changeLog
     #   with:
-    #     FILES: |
-    #       deploy-conf.yaml
+    #     # Format of the steps output context.
+    #     # Can be 'space-delimited', 'csv', or 'json'.
+    #     # Default: 'space-delimited'
+    #     format: 'space-delimited'
+    
+    - uses: technote-space/get-diff-action@v6
+      id: gitDiff
+      with:
+        FILES: |
+          deploy-conf.yaml
 
-    # - name: Print git diff for deploy-conf.yaml
-    #   run: |
-    #     echo ${{steps.gitDiff.outputs.all}}
+    - name: Print git diff for deploy-conf.yaml
+      run: |
+        echo ${{steps.gitDiff.outputs.all}}
     
     - name: Test git diff command
       run: |
