@@ -12,15 +12,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     
-    # # Get the list of changed files
-    # - uses: jitterbit/get-changed-files@v1
-    #   id: changeLog
-    #   with:
-    #     # Format of the steps output context.
-    #     # Can be 'space-delimited', 'csv', or 'json'.
-    #     # Default: 'space-delimited'
-    #     format: 'space-delimited'
-    
+    # Obligatory to use this action! As it is collectng the full log, which allows successfully launch git diff command!
     - uses: technote-space/get-diff-action@v6
       id: gitDiff
       with:
@@ -31,14 +23,14 @@ jobs:
       run: |
         echo ${{steps.gitDiff.outputs.all}}
     
-    - name: Test git diff command
-      run: |
-        git log
-        git diff ${{github.event.before}} ${{github.sha}} $DEPLOY_CONF_FILE_NAME
+    # - name: Test git diff command
+    #   run: |
+    #     git log
+    #     git diff ${{github.event.before}} ${{github.sha}} $DEPLOY_CONF_FILE_NAME
 
     - name: Print changed files
       run: |
-        for changed_file in ${{ steps.changeLog.outputs.all }}; do
+        for changed_file in ${{ env.GIT_DIFF_FILTERED }}; do
           echo "Do something with this ${changed_file}."
           echo "Conf file name: $DEPLOY_CONF_FILE_NAME"
 
