@@ -33,6 +33,7 @@ jobs:
     
     - name: Test git diff command
       run: |
+        git log
         git diff ${{github.event.before}} ${{github.sha}} $DEPLOY_CONF_FILE_NAME
 
     - name: Print changed files
