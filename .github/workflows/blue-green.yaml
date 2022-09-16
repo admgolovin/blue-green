@@ -1,0 +1,64 @@
+name: GitHub Actions Demo
+on: push
+jobs:
+  Explore-GitHub-Actions:
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      DEPLOY_CONF_FILE_NAME: "deploy-conf.yaml"
+    runs-on: [self-hosted, Linux, X64]
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    # Obligatory to use this action! As it is collectng the full log, which allows successfully launch git diff command!
+    - uses: technote-space/get-diff-action@v6
+      id: gitDiff
+      with:
+        FILES: |
+          deploy-conf.yaml
+
+    - name: Print git diff for deploy-conf.yaml
+      run: |
+        echo ${{steps.gitDiff.outputs.all}}
+    
+    # - name: Test git diff command
+    #   run: |
+    #     git log
+    #     git diff ${{github.event.before}} ${{github.sha}} $DEPLOY_CONF_FILE_NAME
+
+    - name: Print changed files
+      run: |
+        for changed_file in ${{ env.GIT_DIFF_FILTERED }}; do
+          echo "Do something with this ${changed_file}."
+
+          if [ "${changed_file}" == "$DEPLOY_CONF_FILE_NAME" ]; then
+            echo "git diff --color=always ${{github.event.before}} ${{github.sha}} $changed_file | perl -wlne 'print $1 if /^\e\[32m\+\e\[m\e\[32m(.*)\e\[m$/'"
+            git diff --color=always ${{github.event.before}} ${{github.sha}} $changed_file | perl -wlne 'print $1 if /^\e\[32m\+\e\[m\e\[32m(.*)\e\[m$/'
+          fi
+        done
+    
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Verify Terraform version
+      run: terraform --version
+
+    - name: Terraform init
+      working-directory: ./terraform
+      run: terraform init -input=false
+    
+    - name: Terraform Plan
+      working-directory: ./terraform
+      run: terraform plan
+
+    - name: Terraform validation
+      working-directory: ./terraform
+      run: terraform validate
+
+    - name: Terraform apply
+      working-directory: ./terraform
+      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+      run: terraform apply -auto-approve -input=false
